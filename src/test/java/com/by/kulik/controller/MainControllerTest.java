@@ -1,3 +1,4 @@
+/*
 package com.by.kulik.controller;
 
 import com.sun.deploy.net.HttpResponse;
@@ -19,4 +20,4 @@ public class MainControllerTest {
        final RequestDispatcher dispatcher = mock(RequestDispatcher.class);
 
     }
-}
+}*/

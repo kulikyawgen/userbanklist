@@ -1,11 +1,23 @@
 package com.by.kulik.domain;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Account {
+@Entity
+public class Account implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private int account;
-    private int userId;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "account")
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
+        public Account() {
+    }
 
     public int getId() {
         return id;
@@ -23,27 +35,12 @@ public class Account {
         this.account = account;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Account account1 = (Account) o;
-        return id == account1.id &&
-                account == account1.account &&
-                userId == account1.userId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, account, userId);
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -51,7 +48,7 @@ public class Account {
         return "Account{" +
                 "id=" + id +
                 ", account=" + account +
-                ", userId=" + userId +
+                ", user=" + user +
                 '}';
     }
 }

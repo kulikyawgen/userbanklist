@@ -3,47 +3,45 @@ package com.by.kulik.controller;
 import com.by.kulik.domain.User;
 import com.by.kulik.repository.AccountRepo;
 import com.by.kulik.repository.UserRepo;
-import com.by.kulik.service.AccountRepoImpl;
-import com.by.kulik.service.UserRepoImpl;
+import com.by.kulik.service.AccountService;
+import com.by.kulik.service.UserService;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/dispatcher")
-public class MainController extends HttpServlet {
+@Controller
+public class MainController {
     final static Logger logger = Logger.getLogger(MainController.class);
-    private AccountRepo accountRepo = new AccountRepoImpl();
-    private UserRepo userRepo = new UserRepoImpl();
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private UserService userService;
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doAction(req, resp);
+    @GetMapping
+    public String mainPage() {
+        return "view";
     }
 
-    public void doAction(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        req.setCharacterEncoding("UTF-8");
-        logger.info("get parameter action");
-        String action = req.getParameter("action");
-      logger.info(action);
-        switch (action) {
-            case ("get accounts sum"):
-                logger.info("case:get accounts sum");
-                req.setAttribute("accountSum", accountRepo.getAccountsSum());
-                req.getRequestDispatcher("accountSum.jsp").forward(req, resp);
-                break;
-            case ("get richest User"):
-                logger.info("case: get richest User");
-                List<User> richestUser = userRepo.getRichestUser();
-                req.setAttribute("richestUser", richestUser);
-                req.getRequestDispatcher("richUser.jsp").forward(req, resp);
-                break;
-        }
+    @GetMapping("/getRichestUser")
+    public String getRichestUser(Model model) {
+        logger.info("case: get richest User");
+        List<User> richestUser = userService.getRichestUser();
+        model.addAttribute("richestUser", richestUser);
+        return "richUser";
     }
+
+    @GetMapping("/getAccountSum")
+    public String getAccountSum(Model model) {
+        logger.info("case:get accounts sum");
+         int accountsSum = accountService.getAccountsSum();
+        model.addAttribute("accountSum", accountsSum);
+        System.out.println(accountsSum);
+        return "accountSum";
+    }
+
 }
 
